@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>HTML 轉 WordPress 區塊工具 v4.0 - CSS分離優化版</title>
+    <title>HTML to WordPress Blocks Converter</title>
     <style>
         * {
             margin: 0;
@@ -13,43 +13,43 @@
 
         body {
             font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", "Microsoft JhengHei", sans-serif;
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-            min-height: 100vh;
-            padding: 20px;
+            background: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
         }
 
         .container {
             max-width: 1400px;
             margin: 0 auto;
+            padding: 20px;
         }
 
-        .header {
+        header {
             text-align: center;
-            color: white;
-            margin-bottom: 30px;
+            margin-bottom: 40px;
+            padding-top: 20px;
         }
 
-        .header h1 {
-            font-size: 2rem;
-            margin-bottom: 10px;
+        h1 {
+            font-size: 28px;
+            font-weight: 500;
+            color: #111;
+            margin-bottom: 8px;
+        }
+
+        .subtitle {
+            color: #666;
+            font-size: 14px;
         }
 
         .version-badge {
             display: inline-block;
-            background: #10b981;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 0.9rem;
-            font-weight: 600;
-            margin-left: 10px;
-        }
-
-        .optimized-badge {
-            background: #3b82f6;
+            background: #22c55e;
             color: white;
             padding: 4px 12px;
             border-radius: 20px;
-            font-size: 0.8rem;
+            font-size: 12px;
+            font-weight: 600;
             margin-left: 10px;
         }
 
@@ -74,48 +74,71 @@
 
         .panel {
             background: white;
-            border-radius: 12px;
-            padding: 20px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+            overflow: hidden;
         }
 
         .panel-header {
+            padding: 12px 16px;
+            border-bottom: 1px solid #e0e0e0;
             display: flex;
             justify-content: space-between;
             align-items: center;
-            margin-bottom: 15px;
-            padding-bottom: 10px;
-            border-bottom: 2px solid #e5e7eb;
+            background: #fafafa;
         }
 
         .panel-title {
-            font-size: 1.1rem;
+            font-size: 14px;
             font-weight: 600;
             color: #1e293b;
-            display: flex;
-            align-items: center;
-            gap: 8px;
         }
 
-        .textarea {
+        .panel-body {
+            padding: 16px;
+        }
+
+        .options {
+            margin: 20px 0;
+            padding: 16px;
+            background: white;
+            border: 1px solid #e0e0e0;
+            border-radius: 8px;
+        }
+
+        .options-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 12px;
+        }
+
+        .option-group label {
+            display: flex;
+            align-items: center;
+            font-size: 14px;
+            cursor: pointer;
+            color: #4b5563;
+        }
+
+        .option-group input[type="checkbox"] {
+            margin-right: 8px;
+        }
+
+        textarea {
             width: 100%;
             min-height: 300px;
-            padding: 15px;
-            border: 2px solid #e5e7eb;
-            border-radius: 8px;
-            font-family: 'Monaco', 'Menlo', monospace;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 4px;
+            font-family: 'SF Mono', Monaco, 'Consolas', monospace;
             font-size: 13px;
-            line-height: 1.6;
+            line-height: 1.5;
             resize: vertical;
         }
 
-        .textarea:focus {
+        textarea:focus {
             outline: none;
-            border-color: #667eea;
-        }
-
-        .input-area {
-            min-height: 200px;
+            border-color: #3b82f6;
         }
 
         .output-area {
@@ -129,26 +152,43 @@
         }
 
         button {
-            padding: 10px 20px;
+            padding: 8px 16px;
             border: none;
-            border-radius: 8px;
-            font-size: 14px;
-            font-weight: 600;
+            border-radius: 4px;
+            font-size: 13px;
+            font-weight: 500;
             cursor: pointer;
-            transition: all 0.3s;
+            transition: background-color 0.2s, transform 0.2s;
             color: white;
         }
 
         .btn-convert {
-            background: #10b981;
-            font-size: 16px;
-            padding: 14px 32px;
+            background: #3b82f6;
+            padding: 12px 28px;
+            font-size: 14px;
         }
 
         .btn-convert:hover {
+            background: #2563eb;
+            transform: translateY(-1px);
+        }
+
+        .btn-secondary {
+            background: #6b7280;
+            font-size: 12px;
+            padding: 6px 14px;
+        }
+
+        .btn-secondary:hover {
+            background: #4b5563;
+        }
+
+        .btn-copy {
+            background: #10b981;
+        }
+
+        .btn-copy:hover {
             background: #059669;
-            transform: translateY(-2px);
-            box-shadow: 0 10px 20px rgba(16, 185, 129, 0.3);
         }
 
         .btn-clear {
@@ -159,116 +199,38 @@
             background: #dc2626;
         }
 
-        .btn-copy {
-            background: #3b82f6;
-        }
-
-        .btn-copy:hover {
-            background: #2563eb;
-        }
-
-        .btn-sample {
-            background: #6b7280;
-            margin-right: 10px;
-        }
-
-        .btn-sample:hover {
-            background: #4b5563;
-        }
-
         .sample-buttons {
             display: flex;
-            gap: 10px;
-            justify-content: center;
-            margin-bottom: 20px;
-            flex-wrap: wrap;
+            gap: 8px;
+            margin-bottom: 12px;
         }
 
         .controls {
             text-align: center;
-            margin-bottom: 20px;
+            margin: 30px 0;
         }
 
-        .message {
-            padding: 12px 16px;
-            border-radius: 8px;
-            margin-top: 10px;
-            display: none;
-        }
-
-        .message.show {
-            display: block;
-        }
-
-        .message.success {
-            background: #d1fae5;
-            color: #065f46;
-            border: 1px solid #6ee7b7;
-        }
-
-        .message.error {
-            background: #fee2e2;
-            color: #991b1b;
-            border: 1px solid #fca5a5;
-        }
-
-        .info-panel {
-            background: #fef3c7;
-            border: 2px solid #f59e0b;
-            border-radius: 12px;
-            padding: 20px;
-            margin-bottom: 20px;
-        }
-
-        .info-title {
-            font-weight: 600;
-            color: #92400e;
-            margin-bottom: 10px;
+        .btn-group {
             display: flex;
-            align-items: center;
             gap: 8px;
-        }
-
-        .info-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 15px;
-            margin-top: 15px;
-        }
-
-        .info-item {
-            display: flex;
-            align-items: flex-start;
-            gap: 8px;
-        }
-
-        .info-icon {
-            color: #f59e0b;
-            font-size: 1.2rem;
-            margin-top: 2px;
-        }
-
-        .info-text {
-            color: #92400e;
-            line-height: 1.5;
-            font-size: 0.9rem;
         }
 
         .stats-bar {
             background: #f3f4f6;
             padding: 10px 15px;
-            border-radius: 8px;
+            border-radius: 4px;
             margin-top: 10px;
             display: flex;
             gap: 20px;
             flex-wrap: wrap;
+            font-size: 12px;
         }
 
         .stat-item {
             display: flex;
             align-items: center;
             gap: 5px;
-            font-size: 0.85rem;
+            color: #6b7280;
         }
 
         .stat-value {
@@ -276,88 +238,124 @@
             color: #1e293b;
         }
 
-        .footer {
-            text-align: center;
-            color: white;
-            margin-top: 40px;
-            padding: 20px;
+        .message {
+            padding: 10px 14px;
+            border-radius: 4px;
+            margin-top: 10px;
+            font-size: 13px;
+            display: none;
         }
 
-        code {
-            background: rgba(255,255,255,0.2);
-            padding: 2px 6px;
-            border-radius: 4px;
-            font-family: monospace;
+        .message.show {
+            display: block;
+        }
+
+        .success {
+            background: #d1fae5;
+            color: #065f46;
+            border: 1px solid #6ee7b7;
+        }
+
+        .error {
+            background: #fee2e2;
+            color: #991b1b;
+            border: 1px solid #fca5a5;
+        }
+
+        footer {
+            text-align: center;
+            margin-top: 40px;
+            padding: 20px;
+            color: #6b7280;
+            font-size: 12px;
+        }
+
+        .footer-links {
+            margin-top: 8px;
+        }
+
+        .footer-links a {
+            color: #3b82f6;
+            text-decoration: none;
+            margin: 0 10px;
+        }
+
+        .footer-links a:hover {
+            text-decoration: underline;
         }
     </style>
 </head>
 <body>
     <div class="container">
-        <!-- Header -->
-        <div class="header">
+        <header>
             <h1>
-                🚀 HTML 轉 WordPress 區塊工具
-                <span class="version-badge">v4.0</span>
-                <span class="optimized-badge">CSS 分離優化</span>
+                HTML to WordPress Blocks
+                <span class="version-badge">v5.0</span>
             </h1>
-            <p style="margin-top: 10px;">自動分離 CSS，優化載入速度與 SEO</p>
+            <p class="subtitle">Clean, optimized conversion with CSS separation</p>
+        </header>
+
+        <!-- Options Panel -->
+        <div class="options">
+            <div class="options-grid">
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" id="separateCSS" checked>
+                        Separate CSS from HTML
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" id="optimizeClasses" checked>
+                        Optimize class names (wp-b1, wp-b2...)
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" id="mergeStyles" checked>
+                        Merge duplicate styles
+                    </label>
+                </div>
+                <div class="option-group">
+                    <label>
+                        <input type="checkbox" id="preserveMediaQueries">
+                        Preserve media queries
+                    </label>
+                </div>
+            </div>
         </div>
 
-        <!-- Info Panel -->
-        <div class="info-panel">
-            <div class="info-title">
-                ⚡ 優化特色
-            </div>
-            <div class="info-grid">
-                <div class="info-item">
-                    <span class="info-icon">✨</span>
-                    <span class="info-text">自動生成簡短類別名稱 (wp-b1, wp-b2)</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">🎨</span>
-                    <span class="info-text">CSS 完全分離，可快取優化</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">📦</span>
-                    <span class="info-text">自動合併重複樣式，減少檔案大小</span>
-                </div>
-                <div class="info-item">
-                    <span class="info-icon">🔍</span>
-                    <span class="info-text">SEO 友善，HTML 結構清晰</span>
-                </div>
-            </div>
-        </div>
-
-        <!-- Main Grid -->
+        <!-- Input Panel -->
         <div class="main-grid">
-            <!-- Input Panel -->
             <div class="panel">
                 <div class="panel-header">
-                    <span class="panel-title">
-                        📥 輸入 HTML
-                    </span>
-                    <div>
-                        <button class="btn-clear" onclick="clearAll()">清除</button>
+                    <span class="panel-title">HTML Input</span>
+                    <button class="btn-clear" onclick="clearAll()">Clear</button>
+                </div>
+                <div class="panel-body">
+                    <div class="sample-buttons">
+                        <button class="btn-secondary" onclick="loadSample('simple')">Simple</button>
+                        <button class="btn-secondary" onclick="loadSample('styled')">Styled</button>
+                        <button class="btn-secondary" onclick="loadSample('complex')">Complex</button>
+                        <button class="btn-secondary" onclick="loadSample('bootstrap')">Bootstrap</button>
+                    </div>
+                    <textarea 
+                        id="htmlInput" 
+                        placeholder="Paste your HTML code here..."
+                    ></textarea>
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <span>Input size:</span>
+                            <span class="stat-value" id="inputSize">0 KB</span>
+                        </div>
                     </div>
                 </div>
-                
-                <div class="sample-buttons">
-                    <button class="btn-sample" onclick="loadSample('simple')">簡單範例</button>
-                    <button class="btn-sample" onclick="loadSample('styled')">含樣式範例</button>
-                    <button class="btn-sample" onclick="loadSample('complex')">複雜結構</button>
-                </div>
-                
-                <textarea 
-                    id="htmlInput" 
-                    class="textarea input-area" 
-                    placeholder="貼上你的 HTML 程式碼..."
-                ></textarea>
             </div>
         </div>
 
         <!-- Convert Button -->
         <div class="controls">
-            <button class="btn-convert" onclick="convertHTML()">🔄 智能轉換（CSS 分離）</button>
+            <button class="btn-convert" onclick="convertHTML()">Convert to Blocks</button>
         </div>
 
         <!-- Output Grid -->
@@ -365,158 +363,436 @@
             <!-- WordPress Blocks Output -->
             <div class="panel">
                 <div class="panel-header">
-                    <span class="panel-title">
-                        📤 WordPress 區塊（乾淨版）
-                    </span>
-                    <button class="btn-copy" onclick="copyBlocks()">複製區塊</button>
-                </div>
-                <textarea 
-                    id="blocksOutput" 
-                    class="textarea output-area" 
-                    placeholder="WordPress 區塊程式碼（只有類別名稱，無內聯樣式）" 
-                    readonly
-                ></textarea>
-                <div class="stats-bar">
-                    <div class="stat-item">
-                        <span>區塊數量：</span>
-                        <span class="stat-value" id="blockCount">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>HTML 大小：</span>
-                        <span class="stat-value" id="htmlSize">0 KB</span>
+                    <span class="panel-title">WordPress Blocks</span>
+                    <div class="btn-group">
+                        <button class="btn-copy" onclick="copyBlocks()">Copy</button>
+                        <button class="btn-secondary" onclick="downloadBlocks()">Download</button>
                     </div>
                 </div>
-                <div id="blockMessage" class="message"></div>
+                <div class="panel-body">
+                    <textarea 
+                        id="blocksOutput" 
+                        class="output-area"
+                        placeholder="WordPress blocks will appear here..." 
+                        readonly
+                    ></textarea>
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <span>Blocks:</span>
+                            <span class="stat-value" id="blockCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Output size:</span>
+                            <span class="stat-value" id="outputSize">0 KB</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Compression:</span>
+                            <span class="stat-value" id="compression">0%</span>
+                        </div>
+                    </div>
+                    <div id="blockMessage" class="message"></div>
+                </div>
             </div>
 
             <!-- CSS Output -->
             <div class="panel">
                 <div class="panel-header">
-                    <span class="panel-title">
-                        🎨 分離的 CSS
-                    </span>
-                    <button class="btn-copy" onclick="copyCSS()">複製 CSS</button>
-                </div>
-                <textarea 
-                    id="cssOutput" 
-                    class="textarea css-area" 
-                    placeholder="/* 優化後的 CSS */
-/* 貼到外觀 > 自訂 > 額外的 CSS */" 
-                    readonly
-                ></textarea>
-                <div class="stats-bar">
-                    <div class="stat-item">
-                        <span>CSS 規則：</span>
-                        <span class="stat-value" id="cssRuleCount">0</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>CSS 大小：</span>
-                        <span class="stat-value" id="cssSize">0 KB</span>
-                    </div>
-                    <div class="stat-item">
-                        <span>節省：</span>
-                        <span class="stat-value" id="savedSize">0%</span>
+                    <span class="panel-title">Extracted CSS</span>
+                    <div class="btn-group">
+                        <button class="btn-copy" onclick="copyCSS()">Copy</button>
+                        <button class="btn-secondary" onclick="downloadCSS()">Download</button>
                     </div>
                 </div>
-                <div id="cssMessage" class="message"></div>
+                <div class="panel-body">
+                    <textarea 
+                        id="cssOutput" 
+                        class="css-area"
+                        placeholder="/* Optimized CSS will appear here */" 
+                        readonly
+                    ></textarea>
+                    <div class="stats-bar">
+                        <div class="stat-item">
+                            <span>Rules:</span>
+                            <span class="stat-value" id="cssRuleCount">0</span>
+                        </div>
+                        <div class="stat-item">
+                            <span>Size:</span>
+                            <span class="stat-value" id="cssSize">0 KB</span>
+                        </div>
+                    </div>
+                    <div id="cssMessage" class="message"></div>
+                </div>
             </div>
         </div>
 
-        <!-- Footer -->
-        <div class="footer">
-            <p>💡 <strong>使用方式</strong>：區塊貼到編輯器（<code>Ctrl+Shift+Alt+M</code>），CSS 貼到外觀自訂</p>
-            <p style="margin-top: 10px;">v4.0 - 針對效能與 SEO 優化</p>
-        </div>
+        <footer>
+            <p>WordPress Block Converter • Optimized for performance and SEO</p>
+            <div class="footer-links">
+                <a href="#" onclick="showHelp()">Help</a>
+                <a href="#" onclick="showShortcuts()">Shortcuts</a>
+                <a href="https://github.com" target="_blank">GitHub</a>
+            </div>
+        </footer>
     </div>
 
     <script>
-        // ========== v4.0 CSS 分離優化引擎 ==========
-        
-        class OptimizedBlockConverter {
+        // ========== Enhanced CSS Parser ==========
+        class CSSParser {
             constructor() {
+                this.rules = [];
+                this.mediaQueries = new Map();
+                this.keyframes = new Map();
+            }
+            
+            parse(css) {
+                css = this.removeComments(css);
+                this.parseImports(css);
+                css = this.parseKeyframes(css);
+                css = this.parseMediaQueries(css);
+                this.parseRules(css);
+                
+                return {
+                    rules: this.rules,
+                    media: this.mediaQueries,
+                    keyframes: this.keyframes
+                };
+            }
+            
+            removeComments(css) {
+                css = css.replace(/\/\*[\s\S]*?\*\//g, '');
+                css = css.replace(/\/\/.*$/gm, '');
+                return css;
+            }
+            
+            parseImports(css) {
+                const importRegex = /@import\s+(?:url\()?['"]([^'"]+)['"](?:\))?\s*;/g;
+                let match;
+                while ((match = importRegex.exec(css)) !== null) {
+                    console.warn(`Found @import: ${match[1]} - needs manual handling`);
+                }
+            }
+            
+            parseKeyframes(css) {
+                const keyframesRegex = /@(?:-webkit-|-moz-|-o-)?keyframes\s+([^\s{]+)\s*{([^{}]+(?:{[^}]*}[^{}]*)*)}/g;
+                let match;
+                while ((match = keyframesRegex.exec(css)) !== null) {
+                    this.keyframes.set(match[1], match[0]);
+                }
+                return css.replace(keyframesRegex, '');
+            }
+            
+            parseMediaQueries(css) {
+                const mediaRegex = /@media\s+([^{]+)\s*{((?:[^{}]*{[^}]*})*[^{}]*)}/g;
+                let match;
+                while ((match = mediaRegex.exec(css)) !== null) {
+                    const query = match[1].trim();
+                    const content = match[2];
+                    
+                    if (!this.mediaQueries.has(query)) {
+                        this.mediaQueries.set(query, []);
+                    }
+                    
+                    const innerRules = this.parseRulesFromString(content);
+                    this.mediaQueries.get(query).push(...innerRules);
+                }
+                return css.replace(mediaRegex, '');
+            }
+            
+            parseRules(css) {
+                const rules = this.parseRulesFromString(css);
+                this.rules.push(...rules);
+            }
+            
+            parseRulesFromString(css) {
+                const rules = [];
+                const ruleRegex = /([^{]+)\s*{\s*([^}]+)\s*}/g;
+                let match;
+                
+                while ((match = ruleRegex.exec(css)) !== null) {
+                    const selectors = this.parseSelectors(match[1]);
+                    const declarations = this.parseDeclarations(match[2]);
+                    
+                    if (selectors.length > 0 && Object.keys(declarations).length > 0) {
+                        rules.push({
+                            selectors: selectors,
+                            declarations: declarations,
+                            specificity: this.calculateSpecificity(selectors[0]),
+                            original: match[0]
+                        });
+                    }
+                }
+                
+                return rules;
+            }
+            
+            parseSelectors(selectorString) {
+                return selectorString
+                    .split(',')
+                    .map(s => s.trim())
+                    .filter(s => s.length > 0);
+            }
+            
+            parseDeclarations(declarationString) {
+                const declarations = {};
+                const props = declarationString.split(';');
+                
+                props.forEach(prop => {
+                    const colonIndex = prop.indexOf(':');
+                    if (colonIndex > 0) {
+                        const property = prop.substring(0, colonIndex).trim();
+                        const value = prop.substring(colonIndex + 1).trim();
+                        
+                        if (property && value) {
+                            const important = value.includes('!important');
+                            const cleanValue = value.replace('!important', '').trim();
+                            
+                            declarations[property] = {
+                                value: cleanValue,
+                                important: important
+                            };
+                        }
+                    }
+                });
+                
+                return declarations;
+            }
+            
+            calculateSpecificity(selector) {
+                let id = 0;
+                let cls = 0;
+                let tag = 0;
+                
+                const idMatches = selector.match(/#[a-zA-Z][\w-]*/g);
+                if (idMatches) id = idMatches.length;
+                
+                const classMatches = selector.match(/\.[a-zA-Z][\w-]*|:(?!not)[a-zA-Z-]+/g);
+                if (classMatches) cls = classMatches.length;
+                
+                const tagMatches = selector.match(/^[a-zA-Z]+|[\s>+~][a-zA-Z]+|::?[a-zA-Z-]+/g);
+                if (tagMatches) tag = tagMatches.length;
+                
+                return id * 100 + cls * 10 + tag;
+            }
+        }
+
+        // ========== Style Optimizer ==========
+        class StyleOptimizer {
+            constructor() {
+                this.styleGroups = new Map();
+                this.duplicateStyles = new Map();
+            }
+            
+            optimizeStyles(cssRules, options = {}) {
+                if (options.mergeStyles) {
+                    this.groupSimilarStyles(cssRules);
+                    this.findDuplicateStyles();
+                }
+                
+                return this.generateOptimizedClasses(options);
+            }
+            
+            groupSimilarStyles(rules) {
+                rules.forEach(rule => {
+                    const styleHash = this.getStyleHash(rule.declarations);
+                    
+                    if (!this.styleGroups.has(styleHash)) {
+                        this.styleGroups.set(styleHash, []);
+                    }
+                    
+                    this.styleGroups.get(styleHash).push(rule);
+                });
+            }
+            
+            getStyleHash(declarations) {
+                const sorted = Object.entries(declarations)
+                    .sort(([a], [b]) => a.localeCompare(b))
+                    .map(([prop, data]) => `${prop}:${data.value}${data.important ? '!important' : ''}`)
+                    .join(';');
+                
+                return this.simpleHash(sorted);
+            }
+            
+            simpleHash(str) {
+                let hash = 0;
+                for (let i = 0; i < str.length; i++) {
+                    const char = str.charCodeAt(i);
+                    hash = ((hash << 5) - hash) + char;
+                    hash = hash & hash;
+                }
+                return Math.abs(hash).toString(36);
+            }
+            
+            findDuplicateStyles() {
+                this.styleGroups.forEach((rules, hash) => {
+                    if (rules.length > 1) {
+                        const selectors = rules.flatMap(r => r.selectors);
+                        this.duplicateStyles.set(hash, {
+                            selectors: [...new Set(selectors)],
+                            declarations: rules[0].declarations
+                        });
+                    }
+                });
+            }
+            
+            generateOptimizedClasses(options) {
+                const optimized = [];
+                let classCounter = 0;
+                
+                this.styleGroups.forEach((rules, hash) => {
+                    classCounter++;
+                    const className = options.optimizeClasses ? `wp-b${classCounter}` : `wp-block-${hash}`;
+                    
+                    optimized.push({
+                        className: className,
+                        selectors: rules.flatMap(r => r.selectors),
+                        declarations: rules[0].declarations,
+                        count: rules.length
+                    });
+                });
+                
+                return optimized;
+            }
+        }
+
+        // ========== Block Converter ==========
+        class BlockConverter {
+            constructor(options = {}) {
+                this.options = {
+                    separateCSS: options.separateCSS ?? true,
+                    optimizeClasses: options.optimizeClasses ?? true,
+                    mergeStyles: options.mergeStyles ?? true,
+                    preserveMediaQueries: options.preserveMediaQueries ?? false
+                };
                 this.classCounter = 0;
-                this.cssRules = new Map();
-                this.classMap = new Map();
+                this.cssMap = new Map();
+                this.cssParser = new CSSParser();
+                this.styleOptimizer = new StyleOptimizer();
                 this.stats = {
                     blocks: 0,
                     cssRules: 0,
                     originalSize: 0,
-                    optimizedSize: 0
+                    outputSize: 0,
+                    cssSize: 0
                 };
             }
             
             convert(html) {
                 try {
-                    // 重置計數器
+                    // Reset
                     this.classCounter = 0;
-                    this.cssRules.clear();
-                    this.classMap.clear();
-                    this.stats = { blocks: 0, cssRules: 0, originalSize: 0, optimizedSize: 0 };
+                    this.cssMap.clear();
+                    this.stats = {
+                        blocks: 0,
+                        cssRules: 0,
+                        originalSize: html.length,
+                        outputSize: 0,
+                        cssSize: 0
+                    };
                     
-                    // 解析 HTML
+                    // Parse HTML
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     
-                    // 記錄原始大小
-                    this.stats.originalSize = html.length;
+                    // Extract CSS
+                    let extractedCSS = '';
+                    if (this.options.separateCSS) {
+                        extractedCSS = this.extractCSS(doc);
+                    }
                     
-                    // 提取並移除 style 標籤
-                    this.extractStyleTags(doc);
-                    
-                    // 轉換元素
+                    // Convert elements
                     const blocks = [];
                     for (let child of doc.body.children) {
                         const block = this.elementToBlock(child);
                         if (block) {
                             blocks.push(block);
-                            this.stats.blocks++;
                         }
                     }
                     
-                    // 生成輸出
                     const blockCode = blocks.join('\n\n');
-                    const cssCode = this.generateOptimizedCSS();
+                    this.stats.outputSize = blockCode.length;
                     
-                    // 計算優化後大小
-                    this.stats.optimizedSize = blockCode.length;
+                    // Generate optimized CSS
+                    let finalCSS = '';
+                    if (this.options.separateCSS && (extractedCSS || this.cssMap.size > 0)) {
+                        finalCSS = this.generateOptimizedCSS(extractedCSS);
+                        this.stats.cssSize = finalCSS.length;
+                    }
                     
                     return {
                         blocks: blockCode,
-                        css: cssCode,
+                        css: finalCSS,
                         stats: this.stats
                     };
                     
                 } catch (error) {
                     console.error('Conversion error:', error);
-                    throw new Error('轉換失敗: ' + error.message);
+                    throw new Error('Conversion failed: ' + error.message);
                 }
             }
             
-            extractStyleTags(doc) {
+            extractCSS(doc) {
+                let css = '';
                 const styleTags = doc.querySelectorAll('style');
                 styleTags.forEach(tag => {
-                    const css = tag.textContent;
-                    // 簡單解析 CSS 規則
-                    const rules = css.match(/[^{}]+{[^}]+}/g) || [];
-                    rules.forEach(rule => {
-                        const [selector, styles] = rule.split('{');
-                        if (selector && styles) {
-                            const cleanSelector = selector.trim();
-                            const cleanStyles = styles.replace('}', '').trim();
-                            this.cssRules.set(cleanSelector, cleanStyles);
-                        }
-                    });
+                    css += tag.textContent + '\n';
                     tag.remove();
                 });
+                
+                // Extract linked stylesheets
+                const linkTags = doc.querySelectorAll('link[rel="stylesheet"]');
+                linkTags.forEach(link => {
+                    console.warn(`External stylesheet found: ${link.href}`);
+                    link.remove();
+                });
+                
+                return css;
+            }
+            
+            processElementStyles(element) {
+                if (!this.options.separateCSS) {
+                    return element.getAttribute('style') || '';
+                }
+                
+                const inlineStyle = element.getAttribute('style');
+                const className = element.className;
+                
+                if (!inlineStyle && !className) {
+                    return '';
+                }
+                
+                if (this.options.optimizeClasses) {
+                    const newClassName = this.generateClassName();
+                    
+                    if (inlineStyle) {
+                        this.cssMap.set(newClassName, this.optimizeStyles(inlineStyle));
+                        element.removeAttribute('style');
+                    }
+                    
+                    return newClassName;
+                }
+                
+                return className;
+            }
+            
+            generateClassName() {
+                this.classCounter++;
+                return `wp-b${this.classCounter}`;
+            }
+            
+            optimizeStyles(styles) {
+                return styles
+                    .replace(/\s+/g, ' ')
+                    .replace(/;\s*;/g, ';')
+                    .replace(/;\s*$/g, '')
+                    .trim();
             }
             
             elementToBlock(element) {
                 const tagName = element.tagName.toLowerCase();
-                
-                // 處理樣式
                 const className = this.processElementStyles(element);
                 
-                // 根據標籤類型生成區塊
+                this.stats.blocks++;
+                
                 switch(tagName) {
                     case 'h1':
                     case 'h2':
@@ -539,70 +815,19 @@
                         return this.listBlock(element, className);
                     case 'blockquote':
                         return this.quoteBlock(element, className);
+                    case 'table':
+                        return this.tableBlock(element, className);
                     case 'button':
                     case 'a':
                         if (this.isButton(element)) {
                             return this.buttonBlock(element, className);
                         }
-                        return this.paragraphBlock(element, className);
+                        return this.htmlBlock(element);
                     case 'hr':
                         return this.separatorBlock();
                     default:
-                        return this.groupBlock(element, className);
+                        return this.htmlBlock(element);
                 }
-            }
-            
-            processElementStyles(element) {
-                const inlineStyle = element.getAttribute('style');
-                const existingClass = element.className;
-                
-                if (!inlineStyle && !existingClass) {
-                    return '';
-                }
-                
-                // 生成唯一的類別名稱
-                const className = this.generateClassName();
-                
-                // 合併所有樣式
-                let styles = '';
-                
-                // 處理現有類別的樣式
-                if (existingClass) {
-                    const classes = existingClass.split(' ');
-                    classes.forEach(cls => {
-                        if (this.cssRules.has('.' + cls)) {
-                            styles += this.cssRules.get('.' + cls) + '; ';
-                        }
-                    });
-                }
-                
-                // 處理內聯樣式
-                if (inlineStyle) {
-                    styles += inlineStyle;
-                }
-                
-                // 優化樣式
-                if (styles) {
-                    const optimizedStyles = this.optimizeStyles(styles);
-                    this.classMap.set(className, optimizedStyles);
-                    this.stats.cssRules++;
-                }
-                
-                return className;
-            }
-            
-            generateClassName() {
-                this.classCounter++;
-                return `wp-b${this.classCounter}`;
-            }
-            
-            optimizeStyles(styles) {
-                // 移除多餘空白和分號
-                return styles
-                    .replace(/\s+/g, ' ')
-                    .replace(/;\s*;/g, ';')
-                    .replace(/;\s*$/g, '')
-                    .trim();
             }
             
             headingBlock(element, className) {
@@ -610,9 +835,7 @@
                 const content = element.innerHTML;
                 
                 const attrs = { level: level };
-                if (className) {
-                    attrs.className = className;
-                }
+                if (className) attrs.className = className;
                 
                 const attrString = this.formatAttributes(attrs);
                 const classAttr = className ? ` class="${className}"` : '';
@@ -626,9 +849,7 @@
                 const content = element.innerHTML;
                 
                 const attrs = {};
-                if (className) {
-                    attrs.className = className;
-                }
+                if (className) attrs.className = className;
                 
                 const attrString = this.formatAttributes(attrs);
                 const classAttr = className ? ` class="${className}"` : '';
@@ -641,37 +862,124 @@
             groupBlock(element, className) {
                 const tagName = element.tagName.toLowerCase();
                 
-                // 檢查是否為欄位結構
                 if (this.isColumnsStructure(element)) {
                     return this.columnsBlock(element);
                 }
                 
-                // 處理子元素
                 const innerBlocks = [];
                 for (let child of element.children) {
                     const childBlock = this.elementToBlock(child);
                     if (childBlock) {
                         innerBlocks.push(childBlock);
-                        this.stats.blocks++;
                     }
                 }
                 
                 const attrs = {};
-                if (tagName !== 'div') {
-                    attrs.tagName = tagName;
-                }
-                if (className) {
-                    attrs.className = className;
-                }
+                if (tagName !== 'div') attrs.tagName = tagName;
+                if (className) attrs.className = className;
                 
                 const attrString = this.formatAttributes(attrs);
                 const classAttr = className ? ` class="${className}"` : '';
                 
-                const content = innerBlocks.join('\n') || element.innerHTML;
+                const content = innerBlocks.join('\n\n') || element.innerHTML;
                 
                 return `<!-- wp:group${attrString} -->
 <div${classAttr}>${content}</div>
 <!-- /wp:group -->`;
+            }
+            
+            imageBlock(element, className) {
+                let img = element;
+                if (element.tagName.toLowerCase() === 'figure') {
+                    img = element.querySelector('img');
+                }
+                
+                if (!img) return '';
+                
+                const src = img.src || '';
+                const alt = img.alt || '';
+                const width = img.width || '';
+                const height = img.height || '';
+                
+                const attrs = {};
+                if (className) attrs.className = className;
+                if (width) attrs.width = width;
+                if (height) attrs.height = height;
+                
+                const attrString = this.formatAttributes(attrs);
+                const classAttr = className ? ` ${className}` : '';
+                
+                return `<!-- wp:image${attrString} -->
+<figure class="wp-block-image${classAttr}"><img src="${src}" alt="${alt}"${width ? ` width="${width}"` : ''}${height ? ` height="${height}"` : ''}/></figure>
+<!-- /wp:image -->`;
+            }
+            
+            listBlock(element, className) {
+                const isOrdered = element.tagName.toLowerCase() === 'ol';
+                const attrs = {};
+                if (isOrdered) attrs.ordered = true;
+                if (className) attrs.className = className;
+                
+                const attrString = this.formatAttributes(attrs);
+                const tagName = isOrdered ? 'ol' : 'ul';
+                const classAttr = className ? ` class="${className}"` : '';
+                
+                return `<!-- wp:list${attrString} -->
+<${tagName}${classAttr}>${element.innerHTML}</${tagName}>
+<!-- /wp:list -->`;
+            }
+            
+            quoteBlock(element, className) {
+                const attrs = {};
+                if (className) attrs.className = className;
+                
+                const attrString = this.formatAttributes(attrs);
+                const classAttr = className ? ` ${className}` : '';
+                
+                return `<!-- wp:quote${attrString} -->
+<blockquote class="wp-block-quote${classAttr}">${element.innerHTML}</blockquote>
+<!-- /wp:quote -->`;
+            }
+            
+            tableBlock(element, className) {
+                const attrs = {};
+                if (className) attrs.className = className;
+                
+                const attrString = this.formatAttributes(attrs);
+                const classAttr = className ? ` ${className}` : '';
+                
+                return `<!-- wp:table${attrString} -->
+<figure class="wp-block-table${classAttr}"><table>${element.innerHTML}</table></figure>
+<!-- /wp:table -->`;
+            }
+            
+            buttonBlock(element, className) {
+                const text = element.textContent;
+                const href = element.href || '#';
+                
+                const attrs = {};
+                if (className) attrs.className = className;
+                
+                const attrString = this.formatAttributes(attrs);
+                const classAttr = className ? ` ${className}` : '';
+                
+                return `<!-- wp:buttons -->
+<div class="wp-block-buttons"><!-- wp:button${attrString} -->
+<div class="wp-block-button${classAttr}"><a class="wp-block-button__link wp-element-button" href="${href}">${text}</a></div>
+<!-- /wp:button --></div>
+<!-- /wp:buttons -->`;
+            }
+            
+            separatorBlock() {
+                return `<!-- wp:separator -->
+<hr class="wp-block-separator has-alpha-channel-opacity"/>
+<!-- /wp:separator -->`;
+            }
+            
+            htmlBlock(element) {
+                return `<!-- wp:html -->
+${element.outerHTML}
+<!-- /wp:html -->`;
             }
             
             columnsBlock(element) {
@@ -696,94 +1004,16 @@
                     }
                 }
                 
-                const classAttr = className ? ` ${className}` : '';
-                const content = innerBlocks.join('\n') || element.innerHTML;
+                const attrs = {};
+                if (className) attrs.className = className;
                 
-                return `<!-- wp:column${className ? ` {"className":"${className}"}` : ''} -->
+                const attrString = this.formatAttributes(attrs);
+                const classAttr = className ? ` ${className}` : '';
+                const content = innerBlocks.join('\n\n') || element.innerHTML;
+                
+                return `<!-- wp:column${attrString} -->
 <div class="wp-block-column${classAttr}">${content}</div>
 <!-- /wp:column -->`;
-            }
-            
-            imageBlock(element, className) {
-                let img = element;
-                if (element.tagName.toLowerCase() === 'figure') {
-                    img = element.querySelector('img');
-                }
-                
-                if (!img) return '';
-                
-                const src = img.src || '';
-                const alt = img.alt || '';
-                
-                const attrs = {};
-                if (className) {
-                    attrs.className = className;
-                }
-                
-                const attrString = this.formatAttributes(attrs);
-                const classAttr = className ? ` ${className}` : '';
-                
-                return `<!-- wp:image${attrString} -->
-<figure class="wp-block-image${classAttr}"><img src="${src}" alt="${alt}"/></figure>
-<!-- /wp:image -->`;
-            }
-            
-            listBlock(element, className) {
-                const isOrdered = element.tagName.toLowerCase() === 'ol';
-                const attrs = {};
-                if (isOrdered) {
-                    attrs.ordered = true;
-                }
-                if (className) {
-                    attrs.className = className;
-                }
-                
-                const attrString = this.formatAttributes(attrs);
-                const tagName = isOrdered ? 'ol' : 'ul';
-                const classAttr = className ? ` class="${className}"` : '';
-                
-                return `<!-- wp:list${attrString} -->
-<${tagName}${classAttr}>${element.innerHTML}</${tagName}>
-<!-- /wp:list -->`;
-            }
-            
-            quoteBlock(element, className) {
-                const attrs = {};
-                if (className) {
-                    attrs.className = className;
-                }
-                
-                const attrString = this.formatAttributes(attrs);
-                const classAttr = className ? ` ${className}` : '';
-                
-                return `<!-- wp:quote${attrString} -->
-<blockquote class="wp-block-quote${classAttr}">${element.innerHTML}</blockquote>
-<!-- /wp:quote -->`;
-            }
-            
-            buttonBlock(element, className) {
-                const text = element.textContent;
-                const href = element.href || '#';
-                
-                const attrs = {};
-                if (className) {
-                    attrs.className = className;
-                }
-                
-                const attrString = this.formatAttributes(attrs);
-                const classAttr = className ? ` ${className}` : '';
-                
-                return `<!-- wp:buttons -->
-<div class="wp-block-buttons"><!-- wp:button${attrString} -->
-<div class="wp-block-button${classAttr}"><a class="wp-block-button__link wp-element-button">${text}</a></div>
-<!-- /wp:button --></div>
-<!-- /wp:buttons -->`;
-            }
-            
-            separatorBlock() {
-                return `<!-- wp:separator -->
-<hr class="wp-block-separator has-alpha-channel-opacity"/>
-<!-- /wp:separator -->`;
             }
             
             isColumnsStructure(element) {
@@ -793,6 +1023,7 @@
                 return className.includes('row') || 
                        className.includes('columns') || 
                        className.includes('grid') ||
+                       className.includes('flex') ||
                        style.includes('display: flex') ||
                        style.includes('display: grid');
             }
@@ -812,7 +1043,7 @@
                 
                 const cleaned = {};
                 for (let [key, value] of Object.entries(attrs)) {
-                    if (value !== null && value !== undefined && value !== '') {
+                    if (value !== null && value !== undefined && value !== '' && value !== false) {
                         cleaned[key] = value;
                     }
                 }
@@ -824,105 +1055,187 @@
                 return ' ' + JSON.stringify(cleaned);
             }
             
-            generateOptimizedCSS() {
-                if (this.classMap.size === 0) {
-                    return '/* 沒有需要的 CSS 樣式 */';
+            generateOptimizedCSS(extractedCSS) {
+                let css = '/* WordPress Block Styles - Optimized */\n';
+                css += '/* Generated by HTML to WordPress Block Converter v5.0 */\n\n';
+                
+                // Parse and optimize extracted CSS
+                if (extractedCSS && this.options.mergeStyles) {
+                    const parsed = this.cssParser.parse(extractedCSS);
+                    
+                    // Optimize regular rules
+                    if (parsed.rules.length > 0) {
+                        const optimized = this.styleOptimizer.optimizeStyles(parsed.rules, this.options);
+                        
+                        optimized.forEach(rule => {
+                            css += `.${rule.className} {\n`;
+                            Object.entries(rule.declarations).forEach(([prop, data]) => {
+                                css += `  ${prop}: ${data.value}${data.important ? ' !important' : ''};\n`;
+                            });
+                            css += '}\n\n';
+                            this.stats.cssRules++;
+                        });
+                    }
+                    
+                    // Add media queries if preserved
+                    if (this.options.preserveMediaQueries && parsed.media.size > 0) {
+                        css += '/* Media Queries */\n\n';
+                        parsed.media.forEach((rules, query) => {
+                            css += `@media ${query} {\n`;
+                            rules.forEach(rule => {
+                                rule.selectors.forEach(selector => {
+                                    css += `  ${selector} {\n`;
+                                    Object.entries(rule.declarations).forEach(([prop, data]) => {
+                                        css += `    ${prop}: ${data.value}${data.important ? ' !important' : ''};\n`;
+                                    });
+                                    css += `  }\n`;
+                                });
+                            });
+                            css += '}\n\n';
+                        });
+                    }
+                } else if (extractedCSS) {
+                    css += extractedCSS + '\n';
                 }
                 
-                let css = '/* WordPress 區塊優化樣式 */\n';
-                css += '/* 由 HTML 轉 WordPress v4.0 自動生成 */\n\n';
-                
-                // 生成優化的 CSS
-                const sortedClasses = Array.from(this.classMap.entries()).sort((a, b) => {
-                    return a[0].localeCompare(b[0]);
-                });
-                
-                sortedClasses.forEach(([className, styles]) => {
-                    css += `.${className} {\n`;
-                    
-                    // 格式化樣式
-                    const styleArray = styles.split(';').filter(s => s.trim());
-                    styleArray.forEach(style => {
-                        const trimmed = style.trim();
-                        if (trimmed) {
-                            css += `  ${trimmed};\n`;
-                        }
+                // Add inline styles
+                if (this.cssMap.size > 0) {
+                    css += '/* Inline Styles */\n\n';
+                    this.cssMap.forEach((styles, className) => {
+                        css += `.${className} { ${styles} }\n`;
+                        this.stats.cssRules++;
                     });
-                    
-                    css += '}\n\n';
-                });
+                }
                 
-                return css;
+                return css.trim();
             }
         }
-        
-        // ========== 主函數 ==========
-        
+
+        // ========== Main Functions ==========
         function convertHTML() {
             const input = document.getElementById('htmlInput').value;
             
             if (!input.trim()) {
-                showMessage('blockMessage', '請輸入 HTML 程式碼', 'error');
+                showMessage('blockMessage', 'Please enter HTML code', 'error');
                 return;
             }
             
             try {
-                const converter = new OptimizedBlockConverter();
+                const options = {
+                    separateCSS: document.getElementById('separateCSS').checked,
+                    optimizeClasses: document.getElementById('optimizeClasses').checked,
+                    mergeStyles: document.getElementById('mergeStyles').checked,
+                    preserveMediaQueries: document.getElementById('preserveMediaQueries').checked
+                };
+                
+                const converter = new BlockConverter(options);
                 const result = converter.convert(input);
                 
-                // 顯示結果
+                // Display results
                 document.getElementById('blocksOutput').value = result.blocks;
                 document.getElementById('cssOutput').value = result.css;
                 
-                // 更新統計
-                document.getElementById('blockCount').textContent = result.stats.blocks;
-                document.getElementById('cssRuleCount').textContent = result.stats.cssRules;
+                // Update stats
+                updateStats(result.stats);
                 
-                const htmlSize = (result.blocks.length / 1024).toFixed(2);
-                const cssSize = (result.css.length / 1024).toFixed(2);
-                const saved = ((1 - result.stats.optimizedSize / result.stats.originalSize) * 100).toFixed(1);
+                showMessage('blockMessage', 'Conversion successful!', 'success');
                 
-                document.getElementById('htmlSize').textContent = `${htmlSize} KB`;
-                document.getElementById('cssSize').textContent = `${cssSize} KB`;
-                document.getElementById('savedSize').textContent = `${saved}%`;
+                if (result.css) {
+                    showMessage('cssMessage', 'CSS optimized and extracted', 'success');
+                }
                 
-                showMessage('blockMessage', '✅ 轉換成功！CSS 已分離優化', 'success');
             } catch (error) {
                 console.error('Conversion error:', error);
-                showMessage('blockMessage', '❌ 轉換失敗: ' + error.message, 'error');
+                showMessage('blockMessage', 'Conversion failed: ' + error.message, 'error');
             }
+        }
+        
+        function updateStats(stats) {
+            const inputSize = (stats.originalSize / 1024).toFixed(2);
+            const outputSize = (stats.outputSize / 1024).toFixed(2);
+            const cssSize = (stats.cssSize / 1024).toFixed(2);
+            const compression = stats.originalSize > 0 
+                ? ((1 - (stats.outputSize + stats.cssSize) / stats.originalSize) * 100).toFixed(1)
+                : '0';
+            
+            document.getElementById('inputSize').textContent = `${inputSize} KB`;
+            document.getElementById('blockCount').textContent = stats.blocks;
+            document.getElementById('outputSize').textContent = `${outputSize} KB`;
+            document.getElementById('cssRuleCount').textContent = stats.cssRules;
+            document.getElementById('cssSize').textContent = `${cssSize} KB`;
+            document.getElementById('compression').textContent = `${compression}%`;
         }
         
         function clearAll() {
             document.getElementById('htmlInput').value = '';
             document.getElementById('blocksOutput').value = '';
             document.getElementById('cssOutput').value = '';
+            
+            // Reset stats
+            document.getElementById('inputSize').textContent = '0 KB';
             document.getElementById('blockCount').textContent = '0';
+            document.getElementById('outputSize').textContent = '0 KB';
             document.getElementById('cssRuleCount').textContent = '0';
-            document.getElementById('htmlSize').textContent = '0 KB';
             document.getElementById('cssSize').textContent = '0 KB';
-            document.getElementById('savedSize').textContent = '0%';
+            document.getElementById('compression').textContent = '0%';
+            
             hideMessages();
         }
         
         function copyBlocks() {
-            copyToClipboard('blocksOutput', 'blockMessage', '區塊程式碼');
+            copyToClipboard('blocksOutput', 'blockMessage', 'Blocks copied to clipboard');
         }
         
         function copyCSS() {
-            copyToClipboard('cssOutput', 'cssMessage', 'CSS 樣式');
+            copyToClipboard('cssOutput', 'cssMessage', 'CSS copied to clipboard');
         }
         
-        function copyToClipboard(elementId, messageId, type) {
+        function copyToClipboard(elementId, messageId, successText) {
             const element = document.getElementById(elementId);
             if (!element.value) {
-                showMessage(messageId, `沒有${type}可複製`, 'error');
+                showMessage(messageId, 'Nothing to copy', 'error');
                 return;
             }
             
             element.select();
-            document.execCommand('copy');
-            showMessage(messageId, `✅ ${type}已複製`, 'success');
+            element.setSelectionRange(0, 99999);
+            
+            try {
+                document.execCommand('copy');
+                showMessage(messageId, successText, 'success');
+            } catch (err) {
+                showMessage(messageId, 'Copy failed', 'error');
+            }
+        }
+        
+        function downloadBlocks() {
+            const content = document.getElementById('blocksOutput').value;
+            if (!content) {
+                showMessage('blockMessage', 'No blocks to download', 'error');
+                return;
+            }
+            download('wordpress-blocks.txt', content);
+        }
+        
+        function downloadCSS() {
+            const content = document.getElementById('cssOutput').value;
+            if (!content) {
+                showMessage('cssMessage', 'No CSS to download', 'error');
+                return;
+            }
+            download('wordpress-blocks.css', content);
+        }
+        
+        function download(filename, content) {
+            const blob = new Blob([content], { type: 'text/plain;charset=utf-8' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = filename;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
         }
         
         function showMessage(elementId, text, type) {
@@ -939,70 +1252,152 @@
             });
         }
         
+        function showHelp() {
+            alert(`How to use:
+1. Paste your HTML code in the input area
+2. Configure options (CSS separation, optimization, etc.)
+3. Click "Convert to Blocks"
+4. Copy the WordPress blocks to your editor
+5. Add the CSS to your theme or Customizer
+
+Tips:
+- Use Ctrl+Shift+Alt+M in WordPress editor to switch to code view
+- Add CSS to Appearance > Customize > Additional CSS`);
+        }
+        
+        function showShortcuts() {
+            alert(`Keyboard Shortcuts:
+- Ctrl+Enter: Convert
+- Ctrl+Shift+C: Copy blocks
+- Ctrl+Shift+S: Copy CSS
+- Ctrl+Shift+D: Download blocks
+- Escape: Clear messages`);
+        }
+        
         function loadSample(type) {
             const samples = {
-                simple: `<h1>歡迎來到我的網站</h1>
-<p>這是一個段落，展示基本的文字內容。</p>
-<img src="https://via.placeholder.com/600x400" alt="範例圖片">`,
+                simple: `<h1>Welcome to My Website</h1>
+<p>This is a simple paragraph with basic text content.</p>
+<img src="https://via.placeholder.com/600x400" alt="Sample image">`,
 
                 styled: `<style>
 .hero-section {
-    background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+    background: #1e293b;
     padding: 60px 20px;
+    text-align: center;
 }
 .hero-title {
     color: white;
     font-size: 3rem;
-    text-align: center;
     margin-bottom: 20px;
 }
 .hero-text {
-    color: rgba(255,255,255,0.9);
+    color: #e2e8f0;
     font-size: 1.2rem;
-    text-align: center;
+    max-width: 600px;
+    margin: 0 auto;
 }
 </style>
 
 <div class="hero-section">
-    <h1 class="hero-title">創新解決方案</h1>
-    <p class="hero-text">為您的業務提供最佳工具</p>
+    <h1 class="hero-title">Innovative Solutions</h1>
+    <p class="hero-text">Building the future with cutting-edge technology and creative design.</p>
 </div>`,
 
                 complex: `<style>
-.container { max-width: 1200px; margin: 0 auto; padding: 20px; }
-.row { display: flex; gap: 30px; margin-bottom: 30px; }
-.col { flex: 1; padding: 20px; background: #f8f9fa; border-radius: 8px; }
-.col h3 { color: #333; margin-bottom: 10px; }
-.col p { color: #666; line-height: 1.6; }
-.btn { display: inline-block; padding: 10px 20px; background: #007bff; color: white; text-decoration: none; border-radius: 5px; }
+.services { max-width: 1200px; margin: 0 auto; padding: 40px 20px; }
+.services-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(300px, 1fr)); gap: 30px; }
+.service-card { background: #f8f9fa; padding: 30px; border-radius: 8px; transition: transform 0.3s; }
+.service-card:hover { transform: translateY(-5px); box-shadow: 0 10px 30px rgba(0,0,0,0.1); }
+.service-icon { width: 60px; height: 60px; background: #3b82f6; border-radius: 50%; margin-bottom: 20px; }
+.service-title { font-size: 1.5rem; margin-bottom: 15px; color: #1e293b; }
+.service-description { color: #64748b; line-height: 1.6; }
+.btn-primary { display: inline-block; margin-top: 15px; padding: 10px 20px; background: #3b82f6; color: white; text-decoration: none; border-radius: 5px; }
+.btn-primary:hover { background: #2563eb; }
 </style>
 
-<div class="container">
-    <h1 style="text-align: center; color: #1e293b; margin-bottom: 40px;">我們的服務</h1>
+<section class="services">
+    <h2 style="text-align: center; margin-bottom: 50px; font-size: 2.5rem;">Our Services</h2>
+    <div class="services-grid">
+        <div class="service-card">
+            <div class="service-icon"></div>
+            <h3 class="service-title">Web Design</h3>
+            <p class="service-description">Create stunning websites that capture your brand essence and engage your audience.</p>
+            <a href="#" class="btn-primary">Learn More</a>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"></div>
+            <h3 class="service-title">Digital Marketing</h3>
+            <p class="service-description">Boost your online presence with comprehensive digital marketing strategies.</p>
+            <a href="#" class="btn-primary">Learn More</a>
+        </div>
+        <div class="service-card">
+            <div class="service-icon"></div>
+            <h3 class="service-title">App Development</h3>
+            <p class="service-description">Build powerful mobile applications that deliver exceptional user experiences.</p>
+            <a href="#" class="btn-primary">Learn More</a>
+        </div>
+    </div>
+</section>`,
+
+                bootstrap: `<div class="container">
     <div class="row">
-        <div class="col">
-            <h3>網頁設計</h3>
-            <p>專業的網頁設計服務，打造獨特品牌形象</p>
-            <a href="#" class="btn">了解更多</a>
+        <div class="col-md-8">
+            <h2 class="mb-4">Main Content</h2>
+            <p class="lead">This is a Bootstrap-based layout example.</p>
+            <div class="card mb-3">
+                <div class="card-body">
+                    <h5 class="card-title">Card Title</h5>
+                    <p class="card-text">Some quick example text to build on the card title.</p>
+                    <a href="#" class="btn btn-primary">Go somewhere</a>
+                </div>
+            </div>
         </div>
-        <div class="col">
-            <h3>數位行銷</h3>
-            <p>全方位數位行銷策略，提升線上能見度</p>
-            <a href="#" class="btn">了解更多</a>
-        </div>
-        <div class="col">
-            <h3>技術支援</h3>
-            <p>24/7 專業技術支援，確保系統穩定運行</p>
-            <a href="#" class="btn">了解更多</a>
+        <div class="col-md-4">
+            <h3 class="mb-3">Sidebar</h3>
+            <ul class="list-group">
+                <li class="list-group-item">First item</li>
+                <li class="list-group-item">Second item</li>
+                <li class="list-group-item">Third item</li>
+            </ul>
         </div>
     </div>
 </div>`
             };
             
             document.getElementById('htmlInput').value = samples[type] || '';
+            updateInputStats();
         }
         
-        // 載入預設範例
+        function updateInputStats() {
+            const input = document.getElementById('htmlInput').value;
+            const size = (input.length / 1024).toFixed(2);
+            document.getElementById('inputSize').textContent = `${size} KB`;
+        }
+        
+        // Event listeners
+        document.getElementById('htmlInput').addEventListener('input', updateInputStats);
+        
+        // Keyboard shortcuts
+        document.addEventListener('keydown', (e) => {
+            if (e.ctrlKey && e.key === 'Enter') {
+                e.preventDefault();
+                convertHTML();
+            } else if (e.ctrlKey && e.shiftKey && e.key === 'C') {
+                e.preventDefault();
+                copyBlocks();
+            } else if (e.ctrlKey && e.shiftKey && e.key === 'S') {
+                e.preventDefault();
+                copyCSS();
+            } else if (e.ctrlKey && e.shiftKey && e.key === 'D') {
+                e.preventDefault();
+                downloadBlocks();
+            } else if (e.key === 'Escape') {
+                hideMessages();
+            }
+        });
+        
+        // Load default sample on page load
         window.onload = function() {
             loadSample('styled');
         };
